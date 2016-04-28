@@ -31,10 +31,10 @@ public class GalaxyDefender extends Application {
         
         
         // Pane with the Area where the player will see the enemys, ...
-        Pane playingArea = new Pane();
+        Pane playingArea = manager.setFiguresToPane(new Pane());
         playingArea.setMinSize(maxPlayingAreaSize.getX(), maxPlayingAreaSize.getY());
         playingArea.setId("playingArea");
-        setFiguresToPane(playingArea);
+        manager.setFiguresToPane(playingArea);
         
         
         // Pane where the score is shown and some other stuff
@@ -59,15 +59,6 @@ public class GalaxyDefender extends Application {
         primaryStage.show();
     }
 
-    private void setFiguresToPane(Pane playingArea) {
-        //Testing with Circles and Rectangles
-        playingArea.getChildren().add(new Circle(manager.getDefender().getPosition().getX(), 
-                manager.getDefender().getPosition().getY(), 10));
-        for(Figure alien : manager.getAliens()){
-            playingArea.getChildren().add(new Rectangle(alien.getPosition().getX(), 
-                alien.getPosition().getY(), 10, 10));
-        }
-    }
     
     /**
      * @param args the command line arguments
