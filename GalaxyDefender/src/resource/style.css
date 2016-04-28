@@ -1,6 +1,6 @@
 #rightRec{
-    -fx-background: red;
+    -fx-background-color: #ff3333;
 }
 #leftRec{
-    -fx-background: blue;
+    -fx-background-color: #6666ff;
 }

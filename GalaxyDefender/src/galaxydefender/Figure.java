@@ -1,5 +1,6 @@
 package galaxydefender;
 
+import galaxydefender.GameManager.Direction;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Shape;
 
@@ -36,8 +37,6 @@ public class Figure extends Shape{
         this.backgroundImage = backgroundImage;
     }
 
-    
-    
     
     
     @Override
