@@ -38,7 +38,7 @@ public class GalaxyDefender extends Application {
         arc.setType(ArcType.ROUND);
         arc.setFill(Color.GREENYELLOW);
         //dsajfasdklöfjaksf
-HEIL HITLER
+
         root.getChildren().addAll(rec, arc);
 
         Scene scene = new Scene(root, 300, 300);
