@@ -37,7 +37,7 @@ public class GalaxyDefender extends Application {
         final Arc arc = new Arc(10, 10, 50, 50, 45, 200);
         arc.setType(ArcType.ROUND);
         arc.setFill(Color.GREENYELLOW);
-        
+        //dsajfasdklöfjaksf
 
         root.getChildren().addAll(rec, arc);
 
