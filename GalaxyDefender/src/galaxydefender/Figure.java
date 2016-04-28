@@ -8,11 +8,11 @@ import javafx.scene.shape.Shape;
  * @author philipp
  */
 public class Figure extends Shape{
-    Position position = new Position();
+    Coordinates position = new Coordinates();
     Image backgroundImage;
 
     
-    public Figure(Position position) {
+    public Figure(Coordinates position) {
         this.position=position;
     } 
     
@@ -20,11 +20,11 @@ public class Figure extends Shape{
         this.backgroundImage = backgroundImage;
     }
 
-    public Position getPosition() {
+    public Coordinates getPosition() {
         return position;
     }
 
-    public void setPosition(Position position) {
+    public void setPosition(Coordinates position) {
         this.position = position;
     }
 

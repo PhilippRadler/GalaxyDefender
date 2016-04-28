@@ -6,10 +6,6 @@
 package galaxydefender;
 
 import java.util.ArrayList;
-import java.util.List;
-import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 
 /**
  *
@@ -19,11 +15,11 @@ public class GameManager {
     final private Figure defender;
     final private ArrayList<Figure> aliens = new ArrayList<Figure>();
 
-    public GameManager(int numberOfAliens) {
-        defender = new Figure(new Position(100, 100));
+    public GameManager(int numberOfAliens, Coordinates maxPaneSize) {
+        defender = new Figure(new Coordinates(100, 100));
         
         for (int i = 0; i < numberOfAliens; i++) {
-            aliens.add(new Figure(new Position(10, (5+i))));
+            aliens.add(new Figure(new Coordinates(15*i, 10)));
         }
     }
 

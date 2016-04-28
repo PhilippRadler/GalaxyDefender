@@ -4,12 +4,12 @@ package galaxydefender;
  *
  * @author philipp
  */
-public class Position {
+public class Coordinates {
     private int x, y;
     
-    public Position() {
+    public Coordinates() {
     }
-    public Position(int x, int y) {
+    public Coordinates(int x, int y) {
         this.x = x;
         this.y = y;
     }
