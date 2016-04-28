@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author philipp
+ * @author Philipp Radler, Matthias Skopek, Bernhard Fröschl
  */
 public class GalaxyDefender extends Application {
 
