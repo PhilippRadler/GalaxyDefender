@@ -1,6 +1,5 @@
 package galaxydefender;
 
-import galaxydefender.GameManager.Direction;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Shape;
 
@@ -43,6 +42,5 @@ public class Figure extends Shape{
     public com.sun.javafx.geom.Shape impl_configShape() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 
 }

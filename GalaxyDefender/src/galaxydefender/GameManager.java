@@ -26,10 +26,18 @@ public class GameManager{
     };
 
     public GameManager(int numberOfAliens, Coordinates maxPaneSize) {
-        defender = new Figure(new Coordinates(100, 100));
+        defender = new Figure(new Coordinates(maxPaneSize.getX()/2, maxPaneSize.getY()-30));
 
+        int y = 0;
+        int x = 0;
         for (int i = 0; i < numberOfAliens; i++) {
-            aliens.add(new Figure(new Coordinates(15 * i, 10)));
+            if((maxPaneSize.getX()-15*x) <=10){
+                y += 30;
+                x=0;
+            }
+            aliens.add(new Figure(new Coordinates(15 * x, 10+y)));
+            
+            x++;
         }
     }
 
