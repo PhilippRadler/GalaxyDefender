@@ -41,18 +41,31 @@ public class GalaxyDefender extends Application {
         Scene scene = new Scene(root, 500, 500);
         primaryStage.setTitle("Galaxy Defender");
         primaryStage.setScene(scene);
-        primaryStage.show();
+       
+        
         scene.setOnKeyPressed((KeyEvent event) -> {
-            if (event.getCode() == KeyCode.LEFT || event.getCode() == KeyCode.RIGHT) {
-
+            if (event.getCode() == KeyCode.LEFT || event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.SPACE) {
+                Figure defender = manager.getDefender();
                 if (event.getCode() == KeyCode.LEFT) {
-                    manager.getDefender().setPosition(new Coordinates(manager.getDefender().getPosition().getX() - 1, manager.getDefender().getPosition().getY()));
-                } else {
-                    manager.getDefender().setPosition(new Coordinates(manager.getDefender().getPosition().getX() + 1, manager.getDefender().getPosition().getY()));
+                    defender.setPosition(new Coordinates(defender.getPosition().getX() - 1, defender.getPosition().getY()));
+                } else if(event.getCode() == KeyCode.RIGHT) {
+                    defender.setPosition(new Coordinates(defender.getPosition().getX() + 1, defender.getPosition().getY()));
+                }else if (event.getCode() == KeyCode.SPACE) {
+                    //Defender's bullet
+                    manager.generateBullet(1);
+                    //Alien's bullet
+                    //manager.generateBullet(2);
+                    
                 }
                 
             }
         });
+        
+        
+        
+        
+        primaryStage.show();
+        
     }
 
     /**

@@ -34,9 +34,7 @@ public class Figure extends Shape{
 
     public void setBackgroundImage(Image backgroundImage) {
         this.backgroundImage = backgroundImage;
-    }
-
-    
+    }    
     
     @Override
     public com.sun.javafx.geom.Shape impl_configShape() {
