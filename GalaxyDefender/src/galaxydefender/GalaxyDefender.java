@@ -6,20 +6,15 @@
 package galaxydefender;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.InputEvent;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.geometry.Rectangle2D;
 
 /**
  *
@@ -27,50 +22,37 @@ import javafx.stage.Stage;
  */
 public class GalaxyDefender extends Application {
 
-    final private Coordinates maxPlayingAreaSize = new Coordinates(500, 425);
-    final GameManager manager = new GameManager(100, maxPlayingAreaSize);
+    static private Coordinates maxPlayingAreaSize;
+    static GameManager manager;
     static Pane playingArea = null;
 
     @Override
     public void start(Stage primaryStage) {
-        VBox box = initPanes();
-
-        Pane root = new Pane(box);
-        root.getStylesheets().add("resource/style.css");
-        Scene scene = new Scene(root, 500, 500);
+        primaryStage.setFullScreen(true);
         primaryStage.setTitle("Galaxy Defender");
         
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        VBox box = initPanes(primaryScreenBounds);
 
-//        scene.setOnKeyTyped((KeyEvent event) -> {
-//            if (event.getCode() == KeyCode.LEFT || event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.SPACE) {
-//                Figure defender = manager.getDefender();
-//                System.out.println("TESTSTSETSETSETWE");
-//                if (event.getCode() == KeyCode.LEFT) {
-//                    defender.setPosition(new Coordinates(defender.getPosition().getX() - 1, defender.getPosition().getY()));
-//                } else if (event.getCode() == KeyCode.RIGHT) {
-//                    defender.setPosition(new Coordinates(defender.getPosition().getX() + 1, defender.getPosition().getY()));
-//                } else if (event.getCode() == KeyCode.SPACE) {
-//                    //Defender's bullet
-//                    manager.generateBullet(1);
-//                    //Alien's bullet
-//                    //manager.generateBullet(2);
-//
-//                }
-//
-//            }
-//        }
-//    );
+        
+        Pane root = new Pane(box);
+        root.getStylesheets().add("resource/style.css");
+        Scene scene = new Scene(root);
+        
+
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 Figure defender = manager.getDefender();
                 switch (event.getCode()) {
                     case RIGHT:
-                        defender.setPosition(new Coordinates(defender.getPosition().getX() + 1, defender.getPosition().getY()));
+                        //defender.setPosition(new Coordinates(defender.getPosition().getX() + 10, defender.getPosition().getY()));
+                        defender.setX(defender.getX() + 10);
                         System.out.println("TEST");
                         break;
                     case LEFT:
-                        defender.setPosition(new Coordinates(defender.getPosition().getX() - 1, defender.getPosition().getY()));
+                        //defender.setPosition(new Coordinates(defender.getPosition().getX() - 10, defender.getPosition().getY()));
+                        defender.setX(defender.getX() - 10);
                         System.out.println("TEST");
                         break;
                     case SPACE:
@@ -81,10 +63,10 @@ public class GalaxyDefender extends Application {
                         manager.generateBullet(2);
                         break;
                 }
-                playingArea = manager.setFiguresToPane(playingArea);
+                //playingArea = manager.setFiguresToPane(playingArea);
             }
-            
         });
+        
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -97,8 +79,16 @@ public class GalaxyDefender extends Application {
         launch(args);
     }
 
-    private VBox initPanes() {
+    private VBox initPanes(Rectangle2D screenBounds) {
         VBox box = new VBox();
+        box.prefHeight(screenBounds.getHeight());
+        box.prefWidth(screenBounds.getWidth());
+        
+        maxPlayingAreaSize = new Coordinates((int)screenBounds.getWidth(), (int)screenBounds.getHeight()-100);
+        manager = new GameManager(100, maxPlayingAreaSize);
+        
+        
+        
         // Pane with the Area where the player will see the enemys, ...
         playingArea = manager.setFiguresToPane(new Pane());
         playingArea.setMinSize(maxPlayingAreaSize.getX(), maxPlayingAreaSize.getY());
@@ -107,17 +97,17 @@ public class GalaxyDefender extends Application {
 
         // Pane where the score is shown and some other stuff
         Pane statsArea = new Pane();
-        statsArea.setMaxSize(500, 100);
+        statsArea.setMaxSize(screenBounds.getWidth(), 65);
 
-        Rectangle statsRec = new Rectangle(0, 0, 500, 50);
+        Rectangle statsRec = new Rectangle(0, 0, screenBounds.getWidth(), 65);
         statsRec.setId("statsArea");
         statsArea.getChildren().add(statsRec);
 
         // Pane where some options are shown
         Pane optionsArea = new Pane();
-        optionsArea.setMaxSize(500, 50);
+        optionsArea.setMaxSize(screenBounds.getWidth(), 35);
 
-        Rectangle optionsRec = new Rectangle(0, 0, 500, 25);
+        Rectangle optionsRec = new Rectangle(0, 0, screenBounds.getWidth(), 35);
         optionsRec.setId("optionsArea");
         optionsArea.getChildren().add(optionsRec);
 

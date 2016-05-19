@@ -1,24 +1,24 @@
 package galaxydefender;
 
 import javafx.scene.image.Image;
-import javafx.scene.shape.Shape;
+import javafx.scene.image.ImageView;
 
 /**
  *
  * @author philipp
  */
-public class Figure extends Shape{
+public class Figure extends ImageView{
     Coordinates position = new Coordinates();
-    Image backgroundImage;
+    Size size;
+    Image image;
 
     
-    public Figure(Coordinates position) {
+    public Figure(Coordinates position, Size size) {
+        image = new Image("resource/Rakete.png");
+        super.setImage(image);
         this.position=position;
+        this.size = size;
     } 
-    
-    public Figure(Image backgroundImage) {
-        this.backgroundImage = backgroundImage;
-    }
 
     public Coordinates getPosition() {
         return position;
@@ -28,17 +28,13 @@ public class Figure extends Shape{
         this.position = position;
     }
 
-    public Image getBackgroundImage() {
-        return backgroundImage;
+    public Size getSize() {
+        return size;
     }
 
-    public void setBackgroundImage(Image backgroundImage) {
-        this.backgroundImage = backgroundImage;
-    }    
-    
-    @Override
-    public com.sun.javafx.geom.Shape impl_configShape() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setSize(Size size) {
+        this.size = size;
     }
+    
 
 }
