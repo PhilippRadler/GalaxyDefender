@@ -46,24 +46,33 @@ public class GalaxyDefender extends Application {
                 Figure defender = manager.getDefender();
                 switch (event.getCode()) {
                     case RIGHT:
-                        //defender.setPosition(new Coordinates(defender.getPosition().getX() + 10, defender.getPosition().getY()));
-                        defender.setX(defender.getX() + 10);
-                        System.out.println("TEST");
+                        defender.setPosition(new Coordinates(defender.getPosition().getX() + 15, defender.getPosition().getY()));
+                        
+                        
+                        //Performancetechnisch Besser -> ImageView X-Position ändern und dann die Zeile 
+                        //"playingArea = manager.setFiguresToPane(playingArea);" löschen
+                        //defender.setX(defender.getX() + 10);
+                        
+                        System.out.println("Rechts");
                         break;
                     case LEFT:
-                        //defender.setPosition(new Coordinates(defender.getPosition().getX() - 10, defender.getPosition().getY()));
-                        defender.setX(defender.getX() - 10);
-                        System.out.println("TEST");
+                        defender.setPosition(new Coordinates(defender.getPosition().getX() - 15, defender.getPosition().getY()));
+                        
+                        
+                        //Performancetechnisch Besser -> ImageView X-Position ändern und dann die Zeile 
+                        //"playingArea = manager.setFiguresToPane(playingArea);" löschen
+                        //defender.setX(defender.getX() - 10);
+                        System.out.println("Links");
                         break;
                     case SPACE:
-                        System.out.println("TEST");
+                        System.out.println("Schuss");
                         //Defender's bullet
                         manager.generateBullet(1);
                         //Alien's bullet
                         manager.generateBullet(2);
                         break;
                 }
-                //playingArea = manager.setFiguresToPane(playingArea);
+                playingArea = manager.setFiguresToPane(playingArea);
             }
         });
         

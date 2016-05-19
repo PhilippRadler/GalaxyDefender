@@ -13,13 +13,21 @@ public class Figure extends ImageView{
     Image image;
 
     
-    public Figure(Coordinates position, Size size) {
-        image = new Image("resource/Rakete.png");
+    public Figure(Coordinates position, Size size, boolean isAlien) {
+        if(!isAlien){
+            image = new Image("resource/Rakete.png");
+        }else{
+            image = new Image("resource/Alien.png");
+        }
+        
         super.setImage(image);
         this.position=position;
         this.size = size;
     } 
-
+    public Figure(Coordinates position, Size size) {
+        this.position=position;
+        this.size = size;
+    } 
     public Coordinates getPosition() {
         return position;
     }
