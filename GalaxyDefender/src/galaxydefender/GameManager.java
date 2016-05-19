@@ -57,6 +57,7 @@ public class GameManager{
     }
     
     public Pane setFiguresToPane(Pane playingArea) {
+        playingArea.getChildren().clear();
         //Testing with Circles and Rectangles
         playingArea.getChildren().add(new Circle(defender.getPosition().getX(),
                 defender.getPosition().getY(), 10));
