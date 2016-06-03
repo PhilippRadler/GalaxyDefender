@@ -6,7 +6,9 @@
 package galaxydefender;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
@@ -15,6 +17,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
 
 /**
  *
@@ -28,17 +33,65 @@ public class GalaxyDefender extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        primaryStage.setFullScreen(false);
+        Button play = new Button("Play");
+        Button scores = new Button("Scores");
+        Button close = new Button("Close");
+
+        play.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                
+                startGame(primaryStage);
+            }
+        });
+
+        play.setPrefSize(320, 80);
+        scores.setPrefSize(320, 80);
+        close.setPrefSize(320, 80);
+
+        play.setGraphicTextGap(20);
+        play.setFont(Font.font("Arial", 20));
+        scores.setFont(Font.font("Arial", 20));
+        scores.setGraphicTextGap(20);
+        close.setGraphicTextGap(20);
+        close.setFont(Font.font("Arial", 20));
+
+        VBox menu = new VBox();
+        menu.getChildren().addAll(play, scores, close);
+        menu.setSpacing(150);
+        menu.alignmentProperty().set(Pos.CENTER);
+
+        StackPane root = new StackPane();
+        root.setId("background");
+        root.getChildren().addAll(menu);
+
+        Scene scene = new Scene(root, 1280, 720);
+
+        primaryStage.setTitle("Hauptmenü!");
+        primaryStage.setScene(scene);
+        scene.getStylesheets().add("resource/style.css");
+        primaryStage.show();
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    private void startGame(Stage primaryStage) {
+
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Galaxy Defender");
-        
+
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         VBox box = initPanes(primaryScreenBounds);
 
-        
         Pane root = new Pane(box);
         root.getStylesheets().add("resource/style.css");
         Scene scene = new Scene(root);
-        
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -47,18 +100,15 @@ public class GalaxyDefender extends Application {
                 switch (event.getCode()) {
                     case RIGHT:
                         defender.setPosition(new Coordinates(defender.getPosition().getX() + 15, defender.getPosition().getY()));
-                        
-                        
+
                         //Performancetechnisch Besser -> ImageView X-Position ändern und dann die Zeile 
                         //"playingArea = manager.setFiguresToPane(playingArea);" löschen
                         //defender.setX(defender.getX() + 10);
-                        
                         System.out.println("Rechts");
                         break;
                     case LEFT:
                         defender.setPosition(new Coordinates(defender.getPosition().getX() - 15, defender.getPosition().getY()));
-                        
-                        
+
                         //Performancetechnisch Besser -> ImageView X-Position ändern und dann die Zeile 
                         //"playingArea = manager.setFiguresToPane(playingArea);" löschen
                         //defender.setX(defender.getX() - 10);
@@ -73,31 +123,21 @@ public class GalaxyDefender extends Application {
                         break;
                 }
                 playingArea = manager.getPlayingArea();
-             }
+            }
         });
-        
+
         primaryStage.setScene(scene);
         primaryStage.show();
-
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        launch(args);
     }
 
     private VBox initPanes(Rectangle2D screenBounds) {
         VBox box = new VBox();
         box.prefHeight(screenBounds.getHeight());
         box.prefWidth(screenBounds.getWidth());
-        
-        maxPlayingAreaSize = new Coordinates((int)screenBounds.getWidth(), (int)screenBounds.getHeight()-100);
+
+        maxPlayingAreaSize = new Coordinates((int) screenBounds.getWidth(), (int) screenBounds.getHeight() - 100);
         manager = new GameManager(100, maxPlayingAreaSize, new Pane());
-        
-        
-        
+
         // Pane with the Area where the player will see the enemys, ...
         playingArea = manager.getPlayingArea();
         playingArea.setMinSize(maxPlayingAreaSize.getX(), maxPlayingAreaSize.getY());

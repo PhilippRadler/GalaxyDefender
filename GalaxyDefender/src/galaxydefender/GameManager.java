@@ -86,7 +86,6 @@ public class GameManager {
         this.setFiguresToPane();
         return playingArea;
     }
-
     
     public void paintBullets() {
         for (Figure bullet : bullets) {
