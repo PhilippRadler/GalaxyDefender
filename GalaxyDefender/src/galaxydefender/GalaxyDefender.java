@@ -72,8 +72,8 @@ public class GalaxyDefender extends Application {
                         manager.generateBullet(2);
                         break;
                 }
-                playingArea = manager.setFiguresToPane(playingArea);
-            }
+                playingArea = manager.getPlayingArea();
+             }
         });
         
         primaryStage.setScene(scene);
@@ -94,15 +94,14 @@ public class GalaxyDefender extends Application {
         box.prefWidth(screenBounds.getWidth());
         
         maxPlayingAreaSize = new Coordinates((int)screenBounds.getWidth(), (int)screenBounds.getHeight()-100);
-        manager = new GameManager(100, maxPlayingAreaSize);
+        manager = new GameManager(100, maxPlayingAreaSize, new Pane());
         
         
         
         // Pane with the Area where the player will see the enemys, ...
-        playingArea = manager.setFiguresToPane(new Pane());
+        playingArea = manager.getPlayingArea();
         playingArea.setMinSize(maxPlayingAreaSize.getX(), maxPlayingAreaSize.getY());
         playingArea.setId("playingArea");
-        manager.setFiguresToPane(playingArea);
 
         // Pane where the score is shown and some other stuff
         Pane statsArea = new Pane();
