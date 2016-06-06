@@ -16,7 +16,9 @@ import javafx.scene.shape.Rectangle;
  * @author philipp
  */
 public class GameManager {
-    final private Pane playingArea;
+
+    final private Pane figureArea;
+    final private Pane bulletArea;
     final private Figure defender;
     final private ArrayList<Figure> aliens = new ArrayList<Figure>();
     final private ArrayList<Figure> bullets = new ArrayList<Figure>();
@@ -29,9 +31,10 @@ public class GameManager {
         right, left, up, down
     };
 
-    public GameManager(int numberOfAliens, Coordinates maxPaneSize, Pane playingArea) {
+    public GameManager(int numberOfAliens, Coordinates maxPaneSize, Pane figureArea) {
         defender = new Figure(new Coordinates(maxPaneSize.getX() / 2, maxPaneSize.getY() - 100), defenderSize, false);
-        this.playingArea = playingArea;
+        this.figureArea = figureArea;
+        this.bulletArea = new Pane();
         this.maxPlayingArea = maxPaneSize;
 
         int y = 0;
@@ -56,44 +59,48 @@ public class GameManager {
     }
 
     public void setFiguresToPane() {
-        playingArea.getChildren().clear();
+        figureArea.getChildren().clear();
 
         defender.setFitHeight(150);
         defender.setFitWidth(100);
         defender.setX(defender.getPosition().getX());
         defender.setY(defender.getPosition().getY());
-        playingArea.getChildren().add(defender);
+        figureArea.getChildren().add(defender);
 
         for (Figure alien : aliens) {
             alien.setFitHeight(50);
             alien.setFitWidth(38);
             alien.setX(alien.getPosition().getX());
             alien.setY(alien.getPosition().getY());
-            playingArea.getChildren().add(alien);
+            figureArea.getChildren().add(alien);
         }
 
-        for(Figure bullet : bullets) {
-//            bullet.setFitHeight(50);
-//            bullet.setFitWidth(38);
-//            bullet.setX(bullet.getPosition().getX());
-//            bullet.setY(bullet.getPosition().getY());
-//            playingArea.getChildren().add(bullet);
-            playingArea.getChildren().add(new Line(bullet.getPosition().getX(), bullet.getPosition().getY(), bullet.getPosition().getX(), bullet.getPosition().getY()-1));
-        }
     }
 
     public Pane getPlayingArea() {
         this.setFiguresToPane();
-        return playingArea;
-    }
-    
-    public void paintBullets() {
-        for (Figure bullet : bullets) {
-            //.getChildren().add(new Line(bullet.getPosition().getX(), bullet.getPosition().getY(), bullet.getPosition().getX(), bullet.getPosition().getY()-1));
-        }
+        return figureArea;
     }
 
-    public void generateBullet(int type) {
+    public Pane paintBullets() {
+        bulletArea.getChildren().clear();
+        
+        
+        //moving bullets
+        for(Figure bullet : bullets){
+            bullet.setPosition(new Coordinates(bullet.getPosition().getX(), bullet.getPosition().getY()-1));
+        }
+        
+        for (Figure bullet : bullets) {
+            bulletArea.getChildren().add(new Line(bullet.getPosition().getX(), bullet.getPosition().getY(), bullet.getPosition().getX(), bullet.getPosition().getY() - 20));
+        }
+        
+        
+        
+        return bulletArea;
+    }
+
+    public void addBullet(int type) {
         // Type 1 : Bullet shot from Defender; Type 2: Bullet shot from Aliens   
 
         if (type == 1) {
@@ -104,58 +111,6 @@ public class GameManager {
                 bullet.setPosition(new Coordinates(bullet.getPosition().getX(), bullet.getPosition().getY() - 1));
                 paintBullets();
             }
-//            try{
-//                new Thread(){
-//                    @Override
-//                    public void run(){
-//                        while(bullet.getPosition().getY() > 0){
-//                            bullet.setPosition(new Coordinates(bullet.getPosition().getX(), bullet.getPosition().getY()-1));
-//                            paintBullets();
-//                            try {
-//                                wait(100);
-//                            } catch (InterruptedException ex) {
-//                                System.out.println("Something with bullet-timeout from defender");
-//                            }
-//                        }
-//                        this.interrupt();
-//                    }
-//                };
-//            }catch(Exception e){
-//                System.out.println("Problem with the flight of a bullet from defender");
-//            }
-
-        } else {
-            Figure bullet = new Figure(new Coordinates(50, 50), bulletSize);
-            bullets.add(bullet);
-            try {
-                new Thread() {
-                    @Override
-                    public void run() {
-                        while (bullet.getPosition().getY() < defender.getPosition().getY()) {
-                            bullet.setPosition(new Coordinates(bullet.getPosition().getX(), bullet.getPosition().getY() + 1));
-                            paintBullets();
-                            try {
-                                wait(100);
-                            } catch (InterruptedException ex) {
-                                System.out.println("Something with bullet-timeout from alien");
-                            }
-                        }
-
-                        System.out.println("You are dead!!!!");
-                        System.out.println("You are dead!!!!");
-                        System.out.println("You are dead!!!!");
-                        System.out.println("You are dead!!!!");
-                        System.out.println("You are dead!!!!");
-                        System.out.println("You are dead!!!!");
-                        System.out.println("You are dead!!!!");
-                        System.out.println("You are dead!!!!");
-                        this.interrupt();
-                    }
-                };
-            } catch (Exception e) {
-                System.out.println("Problem with the flight of a bullet from alien");
-            }
-
         }
     }
 }

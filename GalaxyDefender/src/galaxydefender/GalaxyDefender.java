@@ -5,6 +5,9 @@
  */
 package galaxydefender;
 
+import com.sun.jndi.dns.DnsContextFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -29,11 +32,12 @@ public class GalaxyDefender extends Application {
 
     static private Coordinates maxPlayingAreaSize;
     static GameManager manager;
-    static Pane playingArea = null;
+    static Pane figureArea = null;
+    static Pane bulletArea = null;
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setFullScreen(false);
+        primaryStage.setFullScreen(true);
         Button play = new Button("Play");
         Button scores = new Button("Scores");
         Button close = new Button("Close");
@@ -43,6 +47,12 @@ public class GalaxyDefender extends Application {
             public void handle(ActionEvent event) {
                 
                 startGame(primaryStage);
+            }
+        });
+        close.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.exit(0);
             }
         });
 
@@ -66,9 +76,9 @@ public class GalaxyDefender extends Application {
         root.setId("background");
         root.getChildren().addAll(menu);
 
-        Scene scene = new Scene(root, 1280, 720);
+        Scene scene = new Scene(root);
 
-        primaryStage.setTitle("Hauptmenü!");
+        primaryStage.setTitle("Galaxy Defender");
         primaryStage.setScene(scene);
         scene.getStylesheets().add("resource/style.css");
         primaryStage.show();
@@ -89,7 +99,7 @@ public class GalaxyDefender extends Application {
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         VBox box = initPanes(primaryScreenBounds);
 
-        Pane root = new Pane(box);
+        StackPane root = new StackPane(box, bulletArea);
         root.getStylesheets().add("resource/style.css");
         Scene scene = new Scene(root);
 
@@ -99,7 +109,8 @@ public class GalaxyDefender extends Application {
                 Figure defender = manager.getDefender();
                 switch (event.getCode()) {
                     case RIGHT:
-                        defender.setPosition(new Coordinates(defender.getPosition().getX() + 15, defender.getPosition().getY()));
+                        if(defender.getPosition().getX()<scene.getWidth())
+                            defender.setPosition(new Coordinates(defender.getPosition().getX() + 15, defender.getPosition().getY()));
 
                         //Performancetechnisch Besser -> ImageView X-Position ändern und dann die Zeile 
                         //"playingArea = manager.setFiguresToPane(playingArea);" löschen
@@ -117,15 +128,30 @@ public class GalaxyDefender extends Application {
                     case SPACE:
                         System.out.println("Schuss");
                         //Defender's bullet
-                        manager.generateBullet(1);
-                        //Alien's bullet
-                        manager.generateBullet(2);
+                        manager.addBullet(1);
+                        
+
+                        //Alien's bullet  --> not supported yet
+                        //manager.generateBullet(2);
+                        
                         break;
                 }
-                playingArea = manager.getPlayingArea();
+                figureArea = manager.getPlayingArea();
             }
         });
 
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                bulletArea = manager.paintBullets();
+                try {
+                    wait(200);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GalaxyDefender.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -139,10 +165,15 @@ public class GalaxyDefender extends Application {
         manager = new GameManager(100, maxPlayingAreaSize, new Pane());
 
         // Pane with the Area where the player will see the enemys, ...
-        playingArea = manager.getPlayingArea();
-        playingArea.setMinSize(maxPlayingAreaSize.getX(), maxPlayingAreaSize.getY());
-        playingArea.setId("playingArea");
-
+        figureArea = manager.getPlayingArea();
+        figureArea.setMinSize(maxPlayingAreaSize.getX(), maxPlayingAreaSize.getY());
+        figureArea.setId("figureArea");
+        
+        //Pane with bullets
+        bulletArea = new Pane();
+        bulletArea.setMinSize(maxPlayingAreaSize.getX(), maxPlayingAreaSize.getY());
+        bulletArea.setId("figureArea");
+        
         // Pane where the score is shown and some other stuff
         Pane statsArea = new Pane();
         statsArea.setMaxSize(screenBounds.getWidth(), 65);
@@ -159,7 +190,7 @@ public class GalaxyDefender extends Application {
         optionsRec.setId("optionsArea");
         optionsArea.getChildren().add(optionsRec);
 
-        box.getChildren().addAll(statsArea, playingArea, optionsArea);
+        box.getChildren().addAll(statsArea, figureArea, optionsArea);
 
         return box;
     }
