@@ -6,6 +6,8 @@
 package galaxydefender;
 
 import com.sun.jndi.dns.DnsContextFactory;
+import static java.lang.Thread.sleep;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -22,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 
 /**
@@ -45,7 +48,6 @@ public class GalaxyDefender extends Application {
         play.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
                 startGame(primaryStage);
             }
         });
@@ -99,19 +101,26 @@ public class GalaxyDefender extends Application {
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         VBox box = initPanes(primaryScreenBounds);
 
-        StackPane root = new StackPane(box, bulletArea);
+        //StackPane root = new StackPane(box, bulletArea);
+        Pane root = new Pane(bulletArea);
         root.getStylesheets().add("resource/style.css");
         Scene scene = new Scene(root);
 
-        Thread thread = new Thread() {
+        Thread t1 = new Thread() {
             @Override
             public void run() {
                 while (manager.getBullets().size() > 0) {
-                    bulletArea = manager.paintBullets();
+                    manager.moveBullets();
+                    setBulletsToPane(manager.getBullets());
+                    try {
+                        sleep(100);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(GalaxyDefender.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
+
             }
         };
-        thread.start();
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -139,19 +148,28 @@ public class GalaxyDefender extends Application {
                     case SPACE:
                         System.out.println("Schuss");
                         //Defender's bullet
-                        manager.addBullet(1);
 
+                        manager.addBullet(1);
+                        setBulletsToPane(manager.getBullets());
+                        t1.start();
                         //Alien's bullet  --> not supported yet
                         //manager.generateBullet(2);
-
                         break;
                 }
                 figureArea = manager.getPlayingArea();
             }
-        });
 
+        });
+        
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private void setBulletsToPane(ArrayList<Figure> bullets) {
+        for (Figure bullet : bullets) {
+            bulletArea.getChildren().add(new Rectangle(bullet.getPosition().getX(), bullet.getPosition().getY(), 10, 50));
+        }
+
     }
 
     private VBox initPanes(Rectangle2D screenBounds) {

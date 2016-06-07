@@ -27,6 +27,7 @@ public class GameManager {
     final private Size alienSize = new Size(20, 20);
     final private Size bulletSize = new Size(5, 10);
 
+
     public enum Direction {
         right, left, up, down
     };
@@ -86,26 +87,20 @@ public class GameManager {
         return this.bullets;
     }
 
-    public Pane paintBullets() {
-        bulletArea.getChildren().clear();
-        //moving bullets
-        for (Figure bullet : bullets) {
-            bullet.setPosition(new Coordinates(bullet.getPosition().getX(), bullet.getPosition().getY() - 1));
-        }
-
-        for (Figure bullet : bullets) {
-            bulletArea.getChildren().add(new Line(bullet.getPosition().getX(), bullet.getPosition().getY(), bullet.getPosition().getX(), bullet.getPosition().getY() - 20));
-        }
-
-        return bulletArea;
-    }
-
     public void addBullet(int type) {
         // Type 1 : Bullet shot from Defender; Type 2: Bullet shot from Aliens   
 
         if (type == 1) {
             Figure bullet = new Figure(new Coordinates(this.defender.getPosition().getX(), this.defender.getPosition().getY() - 230), bulletSize);
             bullets.add(bullet);
+        }
+    }
+    
+    public void moveBullets() {
+        for(Figure bullet : bullets){
+            if(bullet.getPosition().getY()>0){
+                bullet.setPosition(new Coordinates(bullet.getPosition().getX(), bullet.getPosition().getY()-1));
+            }
         }
     }
 }
