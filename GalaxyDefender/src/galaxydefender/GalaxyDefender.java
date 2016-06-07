@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -101,26 +102,9 @@ public class GalaxyDefender extends Application {
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         VBox box = initPanes(primaryScreenBounds);
 
-        //StackPane root = new StackPane(box, bulletArea);
-        Pane root = new Pane(bulletArea);
+        StackPane root = new StackPane(box, bulletArea);
         root.getStylesheets().add("resource/style.css");
         Scene scene = new Scene(root);
-
-        Thread t1 = new Thread() {
-            @Override
-            public void run() {
-                while (manager.getBullets().size() > 0) {
-                    manager.moveBullets();
-                    setBulletsToPane(manager.getBullets());
-                    try {
-                        sleep(100);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(GalaxyDefender.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-
-            }
-        };
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -151,7 +135,20 @@ public class GalaxyDefender extends Application {
 
                         manager.addBullet(1);
                         setBulletsToPane(manager.getBullets());
-                        t1.start();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                while (manager.getBullets().size() > 0) {
+                                    manager.moveBullets();
+                                    setBulletsToPane(manager.getBullets());
+                                    try {
+                                        sleep(100);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(GalaxyDefender.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                            }
+                        }).start();
                         //Alien's bullet  --> not supported yet
                         //manager.generateBullet(2);
                         break;
@@ -160,7 +157,7 @@ public class GalaxyDefender extends Application {
             }
 
         });
-        
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }

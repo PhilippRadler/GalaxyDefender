@@ -27,7 +27,6 @@ public class GameManager {
     final private Size alienSize = new Size(20, 20);
     final private Size bulletSize = new Size(5, 10);
 
-
     public enum Direction {
         right, left, up, down
     };
@@ -95,11 +94,13 @@ public class GameManager {
             bullets.add(bullet);
         }
     }
-    
+
     public void moveBullets() {
-        for(Figure bullet : bullets){
-            if(bullet.getPosition().getY()>0){
-                bullet.setPosition(new Coordinates(bullet.getPosition().getX(), bullet.getPosition().getY()-1));
+        if (bullets.size() > 0) {
+            for (Figure bullet : bullets) {
+                if (bullet.getPosition().getY() > 0) {
+                    bullet.setPosition(new Coordinates(bullet.getPosition().getX(), bullet.getPosition().getY() - 1));
+                }
             }
         }
     }
