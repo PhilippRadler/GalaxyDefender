@@ -45,7 +45,7 @@ public class GalaxyDefender extends Application {
         play.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                
+
                 startGame(primaryStage);
             }
         });
@@ -103,14 +103,25 @@ public class GalaxyDefender extends Application {
         root.getStylesheets().add("resource/style.css");
         Scene scene = new Scene(root);
 
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                while (manager.getBullets().size() > 0) {
+                    bulletArea = manager.paintBullets();
+                }
+            }
+        };
+        thread.start();
+
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 Figure defender = manager.getDefender();
                 switch (event.getCode()) {
                     case RIGHT:
-                        if(defender.getPosition().getX()<scene.getWidth())
+                        if (defender.getPosition().getX() < scene.getWidth()) {
                             defender.setPosition(new Coordinates(defender.getPosition().getX() + 15, defender.getPosition().getY()));
+                        }
 
                         //Performancetechnisch Besser -> ImageView X-Position ändern und dann die Zeile 
                         //"playingArea = manager.setFiguresToPane(playingArea);" löschen
@@ -129,29 +140,16 @@ public class GalaxyDefender extends Application {
                         System.out.println("Schuss");
                         //Defender's bullet
                         manager.addBullet(1);
-                        
 
                         //Alien's bullet  --> not supported yet
                         //manager.generateBullet(2);
-                        
+
                         break;
                 }
                 figureArea = manager.getPlayingArea();
             }
         });
 
-        Thread thread = new Thread(){
-            @Override
-            public void run() {
-                bulletArea = manager.paintBullets();
-                try {
-                    wait(200);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(GalaxyDefender.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        };
-        
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -168,12 +166,12 @@ public class GalaxyDefender extends Application {
         figureArea = manager.getPlayingArea();
         figureArea.setMinSize(maxPlayingAreaSize.getX(), maxPlayingAreaSize.getY());
         figureArea.setId("figureArea");
-        
+
         //Pane with bullets
         bulletArea = new Pane();
         bulletArea.setMinSize(maxPlayingAreaSize.getX(), maxPlayingAreaSize.getY());
         bulletArea.setId("figureArea");
-        
+
         // Pane where the score is shown and some other stuff
         Pane statsArea = new Pane();
         statsArea.setMaxSize(screenBounds.getWidth(), 65);

@@ -82,21 +82,21 @@ public class GameManager {
         return figureArea;
     }
 
+    public ArrayList<Figure> getBullets() {
+        return this.bullets;
+    }
+
     public Pane paintBullets() {
         bulletArea.getChildren().clear();
-        
-        
         //moving bullets
-        for(Figure bullet : bullets){
-            bullet.setPosition(new Coordinates(bullet.getPosition().getX(), bullet.getPosition().getY()-1));
+        for (Figure bullet : bullets) {
+            bullet.setPosition(new Coordinates(bullet.getPosition().getX(), bullet.getPosition().getY() - 1));
         }
-        
+
         for (Figure bullet : bullets) {
             bulletArea.getChildren().add(new Line(bullet.getPosition().getX(), bullet.getPosition().getY(), bullet.getPosition().getX(), bullet.getPosition().getY() - 20));
         }
-        
-        
-        
+
         return bulletArea;
     }
 
@@ -106,11 +106,6 @@ public class GameManager {
         if (type == 1) {
             Figure bullet = new Figure(new Coordinates(this.defender.getPosition().getX(), this.defender.getPosition().getY() - 230), bulletSize);
             bullets.add(bullet);
-
-            while (bullet.getPosition().getY() > 0) {
-                bullet.setPosition(new Coordinates(bullet.getPosition().getX(), bullet.getPosition().getY() - 1));
-                paintBullets();
-            }
         }
     }
 }
