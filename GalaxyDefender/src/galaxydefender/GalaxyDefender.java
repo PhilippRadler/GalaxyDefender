@@ -5,11 +5,8 @@
  */
 package galaxydefender;
 
-import com.sun.jndi.dns.DnsContextFactory;
 import static java.lang.Thread.sleep;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -25,7 +22,6 @@ import javafx.stage.Stage;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 
 /**
@@ -106,6 +102,21 @@ public class GalaxyDefender extends Application {
         root.getStylesheets().add("resource/style.css");
         Scene scene = new Scene(root);
 
+        Thread t1 = new Thread() {
+            @Override
+            public void run() {
+                while (manager.getBullets().size() > 0) {
+                    manager.moveBullets();
+                    setBulletsToPane(manager.getBullets());
+                    try {
+                        sleep(100);
+                    } catch (InterruptedException ex) {
+                        System.out.println(ex);
+                    }
+                }
+            }
+        };
+
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -134,8 +145,7 @@ public class GalaxyDefender extends Application {
                         //Defender's bullet
 
                         manager.addBullet(1);
-                        setBulletsToPane(manager.getBullets());
-                        new Thread(new Runnable() {
+                        Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
                                 while (manager.getBullets().size() > 0) {
@@ -144,16 +154,17 @@ public class GalaxyDefender extends Application {
                                     try {
                                         sleep(100);
                                     } catch (InterruptedException ex) {
-                                        Logger.getLogger(GalaxyDefender.class.getName()).log(Level.SEVERE, null, ex);
+                                        System.out.println(ex);
                                     }
                                 }
                             }
-                        }).start();
+                        });
+                        //t1.start();
                         //Alien's bullet  --> not supported yet
                         //manager.generateBullet(2);
                         break;
                 }
-                figureArea = manager.getPlayingArea();
+                figureArea = manager.getFigureArea();
             }
 
         });
@@ -163,6 +174,9 @@ public class GalaxyDefender extends Application {
     }
 
     private void setBulletsToPane(ArrayList<Figure> bullets) {
+        if (bulletArea.getChildren().size() > 0) {
+            bulletArea.getChildren().clear();
+        }
         for (Figure bullet : bullets) {
             bulletArea.getChildren().add(new Rectangle(bullet.getPosition().getX(), bullet.getPosition().getY(), 10, 50));
         }
@@ -175,17 +189,17 @@ public class GalaxyDefender extends Application {
         box.prefWidth(screenBounds.getWidth());
 
         maxPlayingAreaSize = new Coordinates((int) screenBounds.getWidth(), (int) screenBounds.getHeight() - 100);
-        manager = new GameManager(100, maxPlayingAreaSize, new Pane());
+        manager = new GameManager(100, maxPlayingAreaSize);
 
         // Pane with the Area where the player will see the enemys, ...
-        figureArea = manager.getPlayingArea();
+        figureArea = manager.getFigureArea();
         figureArea.setMinSize(maxPlayingAreaSize.getX(), maxPlayingAreaSize.getY());
         figureArea.setId("figureArea");
 
         //Pane with bullets
         bulletArea = new Pane();
         bulletArea.setMinSize(maxPlayingAreaSize.getX(), maxPlayingAreaSize.getY());
-        bulletArea.setId("figureArea");
+        bulletArea.setId("bulletArea");
 
         // Pane where the score is shown and some other stuff
         Pane statsArea = new Pane();

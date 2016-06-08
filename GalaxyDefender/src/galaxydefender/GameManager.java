@@ -18,7 +18,6 @@ import javafx.scene.shape.Rectangle;
 public class GameManager {
 
     final private Pane figureArea;
-    final private Pane bulletArea;
     final private Figure defender;
     final private ArrayList<Figure> aliens = new ArrayList<Figure>();
     final private ArrayList<Figure> bullets = new ArrayList<Figure>();
@@ -31,10 +30,9 @@ public class GameManager {
         right, left, up, down
     };
 
-    public GameManager(int numberOfAliens, Coordinates maxPaneSize, Pane figureArea) {
+    public GameManager(int numberOfAliens, Coordinates maxPaneSize) {
         defender = new Figure(new Coordinates(maxPaneSize.getX() / 2, maxPaneSize.getY() - 100), defenderSize, false);
-        this.figureArea = figureArea;
-        this.bulletArea = new Pane();
+        this.figureArea = new Pane();
         this.maxPlayingArea = maxPaneSize;
 
         int y = 0;
@@ -77,7 +75,7 @@ public class GameManager {
 
     }
 
-    public Pane getPlayingArea() {
+    public Pane getFigureArea() {
         this.setFiguresToPane();
         return figureArea;
     }
