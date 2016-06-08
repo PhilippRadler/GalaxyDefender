@@ -94,11 +94,12 @@ public class GameManager {
     }
 
     public void moveBullets() {
-        if (bullets.size() > 0) {
-            for (Figure bullet : bullets) {
-                if (bullet.getPosition().getY() > 0) {
-                    bullet.setPosition(new Coordinates(bullet.getPosition().getX(), bullet.getPosition().getY() - 1));
-                }
+        for (Figure bullet : bullets) {
+            if (bullet.getPosition().getY() > 0) {
+                bullet.setPosition(new Coordinates(bullet.getPosition().getX(), bullet.getPosition().getY() - 1));
+            } else {
+                bullets.remove(bullet);
+                System.out.println("test");
             }
         }
     }

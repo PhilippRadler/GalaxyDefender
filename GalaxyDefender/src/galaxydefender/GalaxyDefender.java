@@ -102,21 +102,6 @@ public class GalaxyDefender extends Application {
         root.getStylesheets().add("resource/style.css");
         Scene scene = new Scene(root);
 
-        Thread t1 = new Thread() {
-            @Override
-            public void run() {
-                while (manager.getBullets().size() > 0) {
-                    manager.moveBullets();
-                    setBulletsToPane(manager.getBullets());
-                    try {
-                        sleep(100);
-                    } catch (InterruptedException ex) {
-                        System.out.println(ex);
-                    }
-                }
-            }
-        };
-
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -159,7 +144,6 @@ public class GalaxyDefender extends Application {
                                 }
                             }
                         });
-                        //t1.start();
                         //Alien's bullet  --> not supported yet
                         //manager.generateBullet(2);
                         break;
