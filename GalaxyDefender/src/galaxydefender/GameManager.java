@@ -7,15 +7,12 @@ package galaxydefender;
 
 import java.util.ArrayList;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 
 /**
  *
  * @author philipp
  */
-public class GameManager {
+public class GameManager{
 
     final private Pane figureArea;
     final private Figure defender;
@@ -24,17 +21,25 @@ public class GameManager {
     final private Coordinates maxPlayingArea;
     final private Size defenderSize = new Size(100, 150);
     final private Size alienSize = new Size(20, 20);
+    private int scorePerAlien = 10;
     final private Size bulletSize = new Size(5, 10);
+    ScoreListener scoreListener = new ScoreListener() {
+        @Override
+        public void scored(int score) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    };
 
     public enum Direction {
         right, left, up, down
     };
 
-    public GameManager(int numberOfAliens, Coordinates maxPaneSize) {
+    public GameManager(int numberOfAliens, Coordinates maxPaneSize, ScoreListener scoreListener) {
         defender = new Figure(new Coordinates(maxPaneSize.getX() / 2, maxPaneSize.getY() - 100), defenderSize, false);
         this.figureArea = new Pane();
         this.maxPlayingArea = maxPaneSize;
-
+        this.scoreListener = scoreListener;
+        this.scoreListener.scored(scorePerAlien);
         int y = 0;
         int x = 0;
         for (int i = 0; i < numberOfAliens; i++) {
@@ -88,19 +93,31 @@ public class GameManager {
         // Type 1 : Bullet shot from Defender; Type 2: Bullet shot from Aliens   
 
         if (type == 1) {
-            Figure bullet = new Figure(new Coordinates(this.defender.getPosition().getX(), this.defender.getPosition().getY() - 230), bulletSize);
+            Figure bullet = new Figure(new Coordinates((this.defender.getPosition().getX()+(this.defenderSize.getWidth()/4)), this.defender.getPosition().getY()), bulletSize);
             bullets.add(bullet);
         }
     }
 
     public void moveBullets() {
-        for (Figure bullet : bullets) {
-            if (bullet.getPosition().getY() > 0) {
-                bullet.setPosition(new Coordinates(bullet.getPosition().getX(), bullet.getPosition().getY() - 1));
+        for (int i = 0; i < bullets.size(); i++) {
+            if (bullets.get(i).getPosition().getY() > 0) {
+                bullets.get(i).setPosition(new Coordinates(bullets.get(i).getPosition().getX(), bullets.get(i).getPosition().getY() - 1));
+                System.out.println(bullets.get(i).getPosition().getY());
             } else {
-                bullets.remove(bullet);
-                System.out.println("test");
+                //HIT DETECTION
+                //....  Bei Hit die methode trigger Score aufrufen
+                // triggerScore();
+                
+                if (bullets.get(i).getPosition().getY() <= 0) {
+                    bullets.remove(i);
+                    System.out.println("test");
+                    
+                }
             }
         }
+    }
+    
+    public void triggerScore(){
+        this.scoreListener.scored(scorePerAlien);
     }
 }

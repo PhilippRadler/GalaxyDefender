@@ -5,10 +5,11 @@
  */
 package galaxydefender;
 
-import static java.lang.Thread.sleep;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -28,7 +29,7 @@ import javafx.scene.text.Font;
  *
  * @author Philipp Radler, Matthias Skopek, Bernhard Fröschl
  */
-public class GalaxyDefender extends Application {
+public class GalaxyDefender extends Application implements ScoreListener{
 
     static private Coordinates maxPlayingAreaSize;
     static GameManager manager;
@@ -102,6 +103,9 @@ public class GalaxyDefender extends Application {
         root.getStylesheets().add("resource/style.css");
         Scene scene = new Scene(root);
 
+        Task worker = createWorker();
+        new Thread(worker, "mythread").start();
+
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -128,22 +132,8 @@ public class GalaxyDefender extends Application {
                     case SPACE:
                         System.out.println("Schuss");
                         //Defender's bullet
-
                         manager.addBullet(1);
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                while (manager.getBullets().size() > 0) {
-                                    manager.moveBullets();
-                                    setBulletsToPane(manager.getBullets());
-                                    try {
-                                        sleep(100);
-                                    } catch (InterruptedException ex) {
-                                        System.out.println(ex);
-                                    }
-                                }
-                            }
-                        });
+
                         //Alien's bullet  --> not supported yet
                         //manager.generateBullet(2);
                         break;
@@ -157,7 +147,7 @@ public class GalaxyDefender extends Application {
         primaryStage.show();
     }
 
-    private void setBulletsToPane(ArrayList<Figure> bullets) {
+    public void setBulletsToPane(ArrayList<Figure> bullets) {
         if (bulletArea.getChildren().size() > 0) {
             bulletArea.getChildren().clear();
         }
@@ -173,7 +163,7 @@ public class GalaxyDefender extends Application {
         box.prefWidth(screenBounds.getWidth());
 
         maxPlayingAreaSize = new Coordinates((int) screenBounds.getWidth(), (int) screenBounds.getHeight() - 100);
-        manager = new GameManager(100, maxPlayingAreaSize);
+        manager = new GameManager(100, maxPlayingAreaSize, this);
 
         // Pane with the Area where the player will see the enemys, ...
         figureArea = manager.getFigureArea();
@@ -206,4 +196,30 @@ public class GalaxyDefender extends Application {
         return box;
     }
 
+    public Task createWorker() {
+        return new Task() {
+            @Override
+            protected Boolean call() {
+                while (true) {
+                    try {
+                    setBulletsToPane(manager.getBullets());
+                    manager.moveBullets();
+                    
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(GalaxyDefender.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    catch (Exception e){
+                        System.out.println(e);
+                    }
+                }
+            }
+
+        };
+    }
+
+    @Override
+    public void scored(int score) {
+        System.out.println("SCORE!!!!");
+    }
 }
