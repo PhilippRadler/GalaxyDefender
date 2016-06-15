@@ -30,11 +30,7 @@ public class GameManager{
         }
     };
 
-    public enum Direction {
-        right, left, up, down
-    };
-
-    public GameManager(int numberOfAliens, Coordinates maxPaneSize, ScoreListener scoreListener) {
+    public GameManager(Coordinates maxPaneSize, ScoreListener scoreListener) {
         defender = new Figure(new Coordinates(maxPaneSize.getX() / 2, maxPaneSize.getY() - 100), defenderSize, false);
         this.figureArea = new Pane();
         this.maxPlayingArea = maxPaneSize;
@@ -42,13 +38,13 @@ public class GameManager{
         this.scoreListener.scored(scorePerAlien);
         int y = 0;
         int x = 0;
+        int numberOfAliens = (this.maxPlayingArea.getX()/50)*10;
         for (int i = 0; i < numberOfAliens; i++) {
             if ((maxPaneSize.getX() - 15 * x) <= 10) {
-                y += 50;
+                y += 60;
                 x = 0;
             }
             aliens.add(new Figure(new Coordinates(50 * x, 10 + y), alienSize, true));
-
             x++;
         }
     }
@@ -91,7 +87,6 @@ public class GameManager{
 
     public void addBullet(int type) {
         // Type 1 : Bullet shot from Defender; Type 2: Bullet shot from Aliens   
-
         if (type == 1) {
             Figure bullet = new Figure(new Coordinates((this.defender.getPosition().getX()+(this.defenderSize.getWidth()/4)), this.defender.getPosition().getY()), bulletSize);
             bullets.add(bullet);
